@@ -1,4 +1,4 @@
-package getSecret
+package secret
 
 import (
   "bufio"

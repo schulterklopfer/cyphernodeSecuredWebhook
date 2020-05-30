@@ -1,14 +1,10 @@
 package main
 
 import (
-  "crypto/hmac"
-  "crypto/sha256"
-  "encoding/base64"
-  "github.com/schulterklopfer/cyphernodeSecuredWebhook/getSecret"
+  "github.com/schulterklopfer/cyphernodeSecuredWebhook/authorization"
+  "github.com/schulterklopfer/cyphernodeSecuredWebhook/secret"
   "net/http"
   "os"
-  "fmt"
-  "time"
 )
 
 func main() {
@@ -19,23 +15,12 @@ func main() {
   }
 
   url := os.Args[1]
-
-  secret, err := getSecret.GetSecret()
+  secret, err := secret.GetSecret()
 
   if err != nil {
     println( err.Error() )
     os.Exit(1)
   }
-
-  header := "{\"alg\":\"HS256\",\"typ\":\"JWT\"}"
-  payload := fmt.Sprintf("{\"exp\":%d}", time.Now().Unix()+int64(10) )
-  message := base64.URLEncoding.EncodeToString( []byte(header) )+"."+base64.URLEncoding.EncodeToString( []byte(payload) )
-
-  mac := hmac.New(sha256.New, secret)
-  mac.Write([]byte(message))
-  sig := base64.URLEncoding.EncodeToString( mac.Sum(nil) )
-
-  bearerToken := message+"."+sig
 
   client := &http.Client{}
   req, err := http.NewRequest("GET", url, nil)
@@ -43,7 +28,7 @@ func main() {
     println( err.Error() )
     os.Exit(1)
   }
-  req.Header.Set("Authorization", "Bearer "+bearerToken)
+  req.Header.Set("Authorization", authorization.GenerateBearerTokenHeaderField(secret,10) )
   _, err = client.Do(req)
   if err != nil {
     println( err.Error() )
