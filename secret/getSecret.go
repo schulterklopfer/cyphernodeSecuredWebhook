@@ -9,12 +9,12 @@ import (
 
 func GetSecret() ([]byte, error) {
 
-  var secret string
+  var s string
 
-  secret = os.Getenv("CN_WEBHOOKS_SECRET" )
+  s = os.Getenv("CN_WEBHOOKS_SECRET" )
 
-  if secret != "" {
-    secretHex, err := hex.DecodeString(secret)
+  if s != "" {
+    secretHex, err := hex.DecodeString(s)
 
     if err != nil {
       return nil, err
@@ -25,7 +25,7 @@ func GetSecret() ([]byte, error) {
 
   secretPath := os.Getenv("CN_WEBHOOKS_SECRET_PATH" )
   if secretPath == "" {
-    secretPath = "/run/secret/cyphernode_webhooks_secret"
+    secretPath = "/run/s/cyphernode_webhooks_secret"
   }
 
   file, err := os.Open(secretPath)
@@ -41,14 +41,14 @@ func GetSecret() ([]byte, error) {
     if line == "" {
       continue
     }
-    secret = line
+    s = line
     break
   }
 
   if err := scanner.Err(); err != nil {
     return nil, err
   }
-  secretHex, err := hex.DecodeString(secret)
+  secretHex, err := hex.DecodeString(s)
 
   if err != nil {
     return nil, err

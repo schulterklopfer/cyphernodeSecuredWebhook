@@ -15,7 +15,7 @@ func main() {
   }
 
   url := os.Args[1]
-  secret, err := secret.GetSecret()
+  s, err := secret.GetSecret()
 
   if err != nil {
     println( err.Error() )
@@ -28,7 +28,7 @@ func main() {
     println( err.Error() )
     os.Exit(1)
   }
-  req.Header.Set("Authorization", authorization.GenerateBearerTokenHeaderField(secret,10) )
+  req.Header.Set("Authorization", authorization.GenerateBearerTokenHeaderField(s,10) )
   _, err = client.Do(req)
   if err != nil {
     println( err.Error() )
