@@ -25,7 +25,7 @@ func GetSecret() ([]byte, error) {
 
   secretPath := os.Getenv("CN_WEBHOOKS_SECRET_PATH" )
   if secretPath == "" {
-    secretPath = "/run/s/cyphernode_webhooks_secret"
+    secretPath = "/run/secret/cyphernode_webhooks_secret"
   }
 
   file, err := os.Open(secretPath)
